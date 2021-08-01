@@ -1,1 +1,1 @@
-# smallest-blockchain
+# Smallest blockchain implementation
