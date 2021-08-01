@@ -1,85 +1,83 @@
-const Block = require('./Block');
-const axios = require('axios');
+const Block = require('./Block')
+const axios = require('axios')
 
 class Blockchain {
-  constructor() {
-    this.blockchain = [Block.generateGenesisBlock()];
-    this.transactions = [];
+  constructor () {
+    this.blockchain = [Block.generateGenesisBlock()]
+    this.transactions = []
   }
 
-  get() {
-    return this.blockchain;
+  get () {
+    return this.blockchain
   }
 
-  createTransaction(transactionInfo) {
-    this.transactions.push(transactionInfo);
+  createTransaction (transactionInfo) {
+    this.transactions.push(transactionInfo)
   }
 
-  mineNewBlock(minerAddress) {
+  mineNewBlock (minerAddress) {
     if (!this.transactions.length) {
-      return null;
+      return null
     }
+    const lastBlock = this.blockchain[this.blockchain.length - 1]
 
-    const lastBlock = this.blockchain[this.blockchain.length - 1];
-
-    const proof = this.proofOfWork(lastBlock.data.proofOfWork);
+    const proof = this.proofOfWork(lastBlock.data.proofOfWork)
 
     this.createTransaction({
       from: 'network',
       to: minerAddress,
       amount: 1,
-      createdAt: Date.now(),
-    });
+      createdAt: Date.now()
+    })
 
     const newBlock = Block.generateNextBlock(lastBlock, {
       transactions: this.transactions,
-      proofOfWork: proof,
-    });
+      proofOfWork: proof
+    })
 
-    this.transactions = [];
+    this.transactions = []
 
-    this.blockchain.push(newBlock);
+    this.blockchain.push(newBlock)
 
-    return newBlock;
+    return newBlock
   }
 
-  async consensus() {
-      const otherChains = await this.discoverPeerChains()
+  async consensus () {
+    const otherChains = await this.discoverPeerChains()
 
-      let longestChain = this.blockchain
+    let longestChain = this.blockchain
 
-      for(let chain in otherChains) {
-          if(chain.length > longestChain.length) {
-              longestChain = chain
-          }
+    for (const chain of otherChains) {
+      if (chain.length > longestChain.length) {
+        longestChain = chain
       }
+    }
 
-      this.blockchain = longestChain
+    this.blockchain = longestChain
   }
 
+  async discoverPeerChains () {
+    const peerChains = []
 
-  async discoverPeerChains() {
-      const peerChains = []
+    const peersList = process.env.PEERS.split(',')
 
-      const peersList = process.env.PEERS.split(',')
+    for (const peerUrl of peersList) {
+      const peerChain = await axios.get(`${peerUrl}/api/blocks`)
 
-      for(let peerUrl of peersList) {
-          const peerChain = await axios.get(`${peerUrl}/api/blocks`)
+      peerChains.push(peerChain)
+    }
 
-          peerChains.push(peerChain)
-      }
-
-      return peerChains
+    return peerChains
   }
 
-  proofOfWork(lastProof) {
-      let incrementor = lastProof + 1
+  proofOfWork (lastProof) {
+    let incrementor = lastProof + 1
 
-      while(!(incrementor % 9 === 0 && incrementor % lastProof === 0)) {
-          incrementor += 1
-      }
+    while (!(incrementor % 9 === 0 && incrementor % lastProof === 0)) {
+      incrementor += 1
+    }
 
-      return incrementor
+    return incrementor
   }
 }
 

@@ -1,6 +1,6 @@
-const Joi = require('joi');
+const Joi = require('joi')
 
-const { createTransaction } = require('./api');
+const { createTransaction } = require('./api')
 
 module.exports = [
   {
@@ -16,9 +16,9 @@ module.exports = [
           to: Joi.string().required().description('Transaction receiver id'),
           amount: Joi.string()
             .required()
-            .description('Amount of coins sent in the transaction'),
-        }),
-      },
-    },
-  },
-];
+            .description('Amount of coins sent in the transaction')
+        })
+      }
+    }
+  }
+]

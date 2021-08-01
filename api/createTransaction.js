@@ -1,16 +1,16 @@
 module.exports = (request, h) => {
-    const blockchain = request.server.app.bcInstance
+  const blockchain = request.server.app.bcInstance
 
-    blockchain.createTransaction({
-        ...request.payload,
-        createdAt: Date.now()
-    })
+  blockchain.createTransaction({
+    ...request.payload,
+    createdAt: Date.now()
+  })
 
-    const response = h.response({
-        message: 'success'
-    })
+  const response = h.response({
+    message: 'success'
+  })
 
-    response.statusCode = 201
+  response.statusCode = 201
 
-    return response
+  return response
 }

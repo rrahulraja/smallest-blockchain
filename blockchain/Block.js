@@ -1,17 +1,17 @@
-'use strict';
+'use strict'
 
-const crypto = require('crypto');
+const crypto = require('crypto')
 
 class Block {
-  constructor(index, timestamp, data, previousHash) {
-    this.index = index;
-    this.timestamp = timestamp;
-    this.data = data;
-    this.previousHash = previousHash;
-    this.hash = this.calculateHashOfBlock();
+  constructor (index, timestamp, data, previousHash) {
+    this.index = index
+    this.timestamp = timestamp
+    this.data = data
+    this.previousHash = previousHash
+    this.hash = this.calculateHashOfBlock()
   }
 
-  calculateHashOfBlock() {
+  calculateHashOfBlock () {
     return crypto
       .createHash('sha256')
       .update(
@@ -20,23 +20,23 @@ class Block {
         JSON.stringify(this.data),
         this.previousHash
       )
-      .digest('hex');
+      .digest('hex')
   }
 
-  static generateGenesisBlock() {
+  static generateGenesisBlock () {
     return new Block(
       0,
       1627801785239,
       {
-        name: 'Genesis Block',
-        proofOfWork: 9,
+        name: 'Genesis block',
+        proofOfWork: 9
       },
-      -1
-    );
+      '-1'
+    )
   }
 
-  static generateNextBlock(latestBlock, data) {
-    return new Block(latestBlock.index + 1, Date.now(), data, latestBlock.hash);
+  static generateNextBlock (latestBlock, data) {
+    return new Block(latestBlock.index + 1, Date.now(), data, latestBlock.hash)
   }
 }
 

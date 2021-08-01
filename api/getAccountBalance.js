@@ -1,6 +1,6 @@
 module.exports = (request, h) => {
-  const blockchain = request.server.app.bcInstance;
-  const blocks = blockchain.get();
+  const blockchain = request.server.app.bcInstance
+  const blocks = blockchain.get()
 
   const userTransactions = [].concat
     .apply(
@@ -12,22 +12,24 @@ module.exports = (request, h) => {
         transaction != null &&
         (transaction.to === request.params.userAddress ||
           transaction.from === request.params.userAddress)
-    );
+    )
 
-  let accountBalance = userTransactions.reduce((acc, curr) => {
+  const accountBalance = userTransactions.reduce((acc, curr) => {
     if (curr.to === request.params.userAddress) {
-      return acc + curr.amount;
+      return acc + curr.amount
     } else if (curr.from === request.params.userAddress) {
-      return acc - curr.amount;
+      return acc - curr.amount
+    } else {
+      return 0
     }
-  }, 0);
+  }, 0)
 
   const response = h.response({
     accountBalance,
-    userTransactions,
-  });
+    userTransactions
+  })
 
-  response.statusCode = 200;
+  response.statusCode = 200
 
-  return response;
-};
+  return response
+}
